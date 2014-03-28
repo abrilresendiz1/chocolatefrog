@@ -1,0 +1,201 @@
+------------------------------------------
+--Name:Abril resendiz
+--Project: App 3 MidTerm
+--Last Day Modified: 2/27/204
+--------------------------------------------
+
+math.randomseed(os.time())
+
+local widget = require "widget"
+cx = display.contentCenterX
+cy = display.contentCenterY
+cw = display.contentWidth
+ch = display.contentHeight
+f = native.systemFont
+
+display.setStatusBar( display.HiddenStatusBar )
+cx = display.contentCenterX
+cy = display.contentCenterY
+cw = display.contentWidth
+ch = display.contentHeight
+
+--Set Up objects and pictures
+titleText = display.newText("Chocolate Frog Game", cx, cy+100, "Harry P", 50)
+titleText:setFillColor( 1,1,1 )
+titleText2 = display.newText("Welcome To", cx, cy-150, "Harry P", 80)
+
+nameText = display.newText("Abril Resendiz", cx, cy+150 , "Harry P", 40)
+nameText:setFillColor( 1,0,.42)
+frog2 = display.newImage( "frog2.png",cx, cy-70)
+frog2:scale(.8,.8)
+
+local frog = display.newImage( "choc-frog-box.png",cx,cy)
+frog:scale(.4,.4)
+local frog3 = display.newImage("frog2.png", cx,cy-120)
+frog3:scale(.4,.4)
+
+instructionsText = display.newText("Tap the Frog!", cx, cy+120, "Harry P", 35)
+instructionsText:setFillColor(1,0,.42 )
+
+instructions2Text = display.newText("To make it jump inside the Box!", cx, cy+150, "Harry P", 28)
+instructions2Text:setFillColor(1,0,.42 )
+
+local bg = display.newImage ("bghd.jpg",cx, 300);
+    bg:toBack();
+    
+    bg.alpha = 0
+local bg2 = display.newImage ("honeydukes.png",cx, 200);
+    bg2:toBack();
+    bg2:scale(.60,1)
+    bg2.alpha = 1
+    
+ endText = display.newText("Game Over", cx, cy , "Harry P", 100)
+ endText:setFillColor(1,0,.42 )
+ endText.alpha = 0
+ 
+
+--Boolean Variables
+local firstTime = true
+local gameOver = false
+local count = 0
+
+--Songs and Sounds
+local soundID = media.newEventSound( "croak.mp3" )
+local playBeep = function()
+        media.playEventSound( soundID )
+end
+timer.performWithDelay( 7500, playBeep, 0 )
+
+local theme = audio.loadSound("ThemeSong.mp3")
+local jump = audio.loadSound("jump.wav")
+
+ 
+ -- Define Transitions
+ transition.to(bg2, {time = 2000, delay = 500, alpha = 1})
+--Red Back Ground
+transition.to(frog2, {time = 2000, delay = 3500, alpha = 1})
+--Choc Frog Box
+frog.alpha = 0
+transition.to(frog, {time = 2000, delay = 500, alpha = 0})
+--Choc Frog
+frog3.alpha = 0
+transition.to(frog3, {time = 2000, delay = 7500, alpha = 0})
+transition.to(audio.play(sound),{time = 3000, delay = 7500})
+--Background
+bg.alpha = 0
+transition.to(bg, {time = 2000, delay = 8000, alpha = 0})
+-- Backfroun one
+
+--Title Text
+titleText.alpha = 0
+transition.to(titleText, {time = 3000, delay = 860, alpha = 1})
+
+--Title Text
+titleText2.alpha = 0
+transition.to(titleText2, {time = 3000, delay = 860, alpha = 1})
+--Name Text
+nameText.alpha = 0
+transition.to(nameText, {time = 3000, delay = 860, alpha = 1})
+
+ --Instructions Text
+instructionsText.alpha = 0
+transition.to(instructionsText, {time = 300, delay = 8000, alpha = 01})
+instructionsText.alpha = 0
+instructions2Text.alpha = 0
+transition.to(instructions2Text, {time = 300, delay = 8000, alpha = 01})
+instructions2Text.alpha = 0
+--Title Text
+titleText.alpha = 0
+transition.to(titleText, {time = 1000, delay = 7000, alpha = 0})
+--Title Text
+titleText2.alpha = 0
+transition.to(titleText2, {time = 1000, delay = 7000, alpha = 0})
+--Name Text
+nameText.alpha = 0
+transition.to(nameText, {time = 1000, delay = 7000, alpha = 0})
+--Red Background Pic
+frog2.alpha = 0
+transition.to(frog2, {time = 1000, delay = 7000, alpha = 0})
+--Background
+bg.alpha = 0
+transition.to(bg, {time = 2000, delay = 8000, alpha = 1})
+--background one
+bg2.alpha = 0
+transition.to(bg2, {time = 2000, delay = 8000, alpha = 0})
+--chocoate box
+frog.alpha = 0
+transition.to(frog, {time = 2000, delay = 8000, alpha = 1})
+--Frog 
+frog3.alpha = 0
+transition.to(frog3, {time = 1000, delay = 10000, alpha = 1})
+
+--Touch Function
+local function overlaps (obj1, obj2)
+  return obj1.contentBounds.xMin < obj2.contentBounds.xMax
+  and obj1.contentBounds.xMax > obj2.contentBounds.xMin
+  and obj1.contentBounds.yMin < obj2.contentBounds.yMax
+  and obj1.contentBounds.yMax > obj2.contentBounds.yMin
+ end
+
+local function myTouchListener( event )
+
+    if ( event.phase == "began" ) then
+       
+        if(event.phase == "touch")then
+            count = count +1
+            end
+        --code executed when the button is touched
+        frog3.alpha = 0
+        xc  = math.random (-150,150)
+        yc  = math.random (-200,200) 
+        lastX= (cx+xc)
+        lastY= (cy+yc)
+        event.x = lastX
+        event.y = lastY
+        frog3 = display.newImage( "frog2.png",lastX,lastY)
+        frog3:scale(.4,.4)
+        frog3.alpha = 1
+       
+        frog3:addEventListener( "touch", myTouchListener )  --add a "touch" listener to the object
+        audio.play(jump)
+
+        if overlaps (frog3, frog) then
+          gameOver = true  
+          count = count + 1
+        else
+          gameOver = false
+          count = count + 1
+         
+        end
+           countJumps = display.newText("In "..count.." Jumps !", cx, cy+130 , "Harry P", 50)
+           countJumps:setFillColor(1,0,.42 )
+           countJumps.alpha = 0
+        
+         if (gameOver)then
+            audio.play(theme)
+            endText.alpha  = 1
+            countJumps.alpha = 1
+            frog3.alpha = 1
+            frog.alpha  = 1
+            transition.to(frog, {time = 2000, delay = 950, alpha = 0})
+            transition.to(frog3, {time = 2000, delay = 950, alpha = 0})
+            transition.to(instructionsText, {time = 2000, delay =0, alpha = 0})
+             transition.to(instructions2Text, {time = 2000, delay =0, alpha = 0})
+ 
+          end
+  end
+
+end
+ --add a "touch" listener to the object
+
+if (firstTime) then
+  frog3:addEventListener( "touch", myTouchListener ) 
+  firstTime = false
+end
+
+
+
+
+
+
+
